@@ -1,0 +1,9 @@
+[package]
+name = "parity"
+version = "1.0.0"
+edition = "2021"
+description = "Trade-by-trade parity check between a TradingView Pine strategy and its MT5 port"
+license = "MIT"
+publish = false
+
+[dependencies]

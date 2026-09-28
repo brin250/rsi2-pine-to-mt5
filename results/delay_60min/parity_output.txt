@@ -1,0 +1,17 @@
+﻿RSI(2) Connors parity — 2986 bars (1035 evaluated) 2015.10.12 00:00..2026.09.24 00:00
+rules: long close>SMA200 & RSI<5; short close<SMA200 & RSI>95; exit on SMA5 cross; fill next open
+
+1) INDICATORS on 1035 evaluated bars — max |EA - reference|:
+   RSI 5.00e-11   SMA200 1.55e-15   SMA5 4.22e-15   MATCH
+
+2) TRADES — reference 46 actions, EA 46 actions, matched 46 (100.0%)
+   only in reference: 0   only in EA: 0   EA rows on unknown bars: 0
+
+3) PRICES — max |reference next open - EA bar open| over 46 fills: 0.00e0 MATCH
+   execution cost vs bar open: buys +3.16 pips avg (23), sells -0.52 pips avg (23)  <- spread (+ price drift if execution is delayed), not a logic difference
+
+4) PERFORMANCE (closed round trips):
+  reference @ bar opens        trades   23  WR  65.2%  total     +77.8 pips  avg  +3.38 pips  PF  1.16  (lev 1 lot, no compounding)
+  EA @ actual fills            trades   23  WR  65.2%  total     +17.2 pips  avg  +0.75 pips  PF  1.04  (lev 1 lot, no compounding)
+
+VERDICT: LOGIC PARITY — every signal and fill bar identical

@@ -1,0 +1,40 @@
+// RSI(2) mean reversion — Larry Connors, "Short Term Trading Strategies That Work" (2008).
+// Long: close above the 200-day SMA and RSI(2) below 5. Exit: close above the 5-day SMA.
+// Short (mirror): close below the 200-day SMA and RSI(2) above 95. Exit: close below the 5-day SMA.
+// Signals are evaluated on bar close and fill at the next bar's open (TradingView default).
+// Original implementation for the MT5 conversion portfolio piece.
+
+//@version=6
+strategy("RSI(2) Mean Reversion (Connors)", overlay = true,
+     initial_capital = 100000, currency = currency.USD,
+     default_qty_type = strategy.fixed, default_qty_value = 100000,
+     commission_value = 0, slippage = 0, pyramiding = 0,
+     process_orders_on_close = false)
+
+rsiLen    = input.int(2, "RSI length", minval = 1)
+buyBelow  = input.float(5.0, "Buy when RSI below")
+sellAbove = input.float(95.0, "Short when RSI above")
+trendLen  = input.int(200, "Trend SMA length", minval = 1)
+exitLen   = input.int(5, "Exit SMA length", minval = 1)
+allowShort = input.bool(true, "Allow shorts")
+
+rsi    = ta.rsi(close, rsiLen)
+trend  = ta.sma(close, trendLen)
+exitMa = ta.sma(close, exitLen)
+
+isFlat  = strategy.position_size == 0
+isLong  = strategy.position_size > 0
+isShort = strategy.position_size < 0
+
+// One decision per bar, in a fixed order, so the logic is unambiguous to port.
+if isFlat and close > trend and rsi < buyBelow
+    strategy.entry("Long", strategy.long)
+else if isFlat and allowShort and close < trend and rsi > sellAbove
+    strategy.entry("Short", strategy.short)
+else if isLong and close > exitMa
+    strategy.close("Long")
+else if isShort and close < exitMa
+    strategy.close("Short")
+
+plot(trend, "SMA trend", color.gray)
+plot(exitMa, "SMA exit", color.orange)
